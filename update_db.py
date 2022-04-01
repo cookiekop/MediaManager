@@ -9,7 +9,7 @@ handler = ErrorHandler()
 def main():
     db = MediaSQL(db_name=db_name, passwd=db_passwd)
     db.create_tb(db_tb_name, db_cols, db_col_ds, db_col_type)
-    db_data = db.query(db_tb_name, 'True ORDER BY update_time ASC')
+    db_data = db.query(db_tb_name, 'True ORDER BY update_time DESC')
     last_update_time = 0
     if len(db_data) != 0: last_update_time = db_data[0][-1]
 
