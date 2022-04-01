@@ -7,7 +7,7 @@ from jellyfin_manager import JellyfinManager
 from handler import ErrorHandler
 handler = ErrorHandler()
 def main():
-    db = MediaSQL(db_name=db_name, passwd=db_passwd)
+    db = MediaSQL()
     db.create_tb(db_tb_name, db_cols, db_col_ds, db_col_type)
     db_data = db.query(db_tb_name, 'True ORDER BY update_time DESC')
     last_update_time = 0

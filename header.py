@@ -1,4 +1,6 @@
+db_host = "localhost"
 db_name = "media"
+db_user = "root"
 db_passwd = 
 db_tb_name = "media_status"
 db_cols = ("imdb_id", "rating", "is_series", "jf_id", "update_time")

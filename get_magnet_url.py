@@ -7,7 +7,7 @@ import sys
 handler = ErrorHandler()
 def main():
     client = api.RarbgAPI(options={'retries': 1})
-    db = MediaSQL(db_name=db_name, passwd=db_passwd)
+    db = MediaSQL()
     movie_categories = [api.RarbgAPI.CATEGORY_MOVIE_X264, \
                         api.RarbgAPI.CATEGORY_MOVIE_X264_1080P, \
                         api.RarbgAPI.CATEGORY_MOVIE_X264_720P, \
