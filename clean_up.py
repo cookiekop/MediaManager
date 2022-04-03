@@ -16,7 +16,7 @@ def main():
 
     with open("filenames.txt", "r") as f:
         for filename in f:
-            work_dir = os.path.join(download_dir, filename)
+            work_dir = os.path.join(download_dir, filename.strip())
             delete_files(work_dir)
             delete_empty_dirs(work_dir)
 
