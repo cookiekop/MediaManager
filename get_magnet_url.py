@@ -15,7 +15,7 @@ def main():
                         api.RarbgAPI.CATEGORY_MOVIE_X265_1080P]
     series_categories = [api.RarbgAPI.CATEGORY_TV_EPISODES_HD]
     db_data = db.query(db_tb_name, "rating=0 AND jf_id is NULL AND is_series=0")[:max_downloads]
-    if len(db_data) < max_downloads: db_data.extend(db.query(db_tb_name, "rating=0 AND jf_id is NULL AND is_series=0") \
+    if len(db_data) < max_downloads: db_data.extend(db.query(db_tb_name, "rating=5 AND jf_id is NULL AND is_series=0") \
                                      [:max_downloads - len(db_data)])
                                      
     with open("magnets_movies.txt", "w") as f_l_m, \
