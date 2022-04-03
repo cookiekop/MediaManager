@@ -1,4 +1,5 @@
 from header import *
+import glob
 import os
 
 def main():
@@ -16,9 +17,12 @@ def main():
 
     with open("filenames.txt", "r") as f:
         for filename in f:
-            work_dir = os.path.join(download_dir, filename.strip())
-            delete_files(work_dir)
-            delete_empty_dirs(work_dir)
+            possible_work_dir = os.path.join(download_dir, filename.strip())
+            work_dir_list = glob.glob(possible_work_dir+"*")
+            for work_dir in work_dir_list:
+                if work_dir.endswith(".aria2"): continue
+                delete_files(work_dir)
+                delete_empty_dirs(work_dir)
 
 if __name__ == "__main__":
     main()
