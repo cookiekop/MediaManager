@@ -29,7 +29,7 @@ def main():
                 api_ret = client.search(search_imdb=data[0], categories=category, sort='last')
                 if len(api_ret) > 0: 
                     for torrent in api_ret:
-                        if torrent.leecher == 0 and torrent.seeder < 3: continue
+                        if torrent.leechers == 0 and torrent.seeders < 3: continue
                         f_n.write(fn_prefix+"/"+torrent.filename+"\n")
                         f.write(torrent.download+"\n")
                         break
