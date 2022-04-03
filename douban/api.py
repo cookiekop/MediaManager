@@ -43,7 +43,7 @@ class DoubanData:
     def update(self, last_update_ts):
         self._ts = int(time.time())
         self._last_update_ts = last_update_ts
-        # self._get_data(self._id, 'wish')
+        self._get_data(self._id, 'wish')
         self._get_data(self._id, 'collect')
     
     def _get_data(self, id, category):
@@ -86,7 +86,7 @@ class DoubanData:
         page_name = soup.head.title.text
         wish_num = int(page_name[page_name.rfind('(')+1: -2])
 
-        for start_i in range(315, wish_num, 15):
+        for start_i in range(0, wish_num, 15):
             print(start_i)
             if start_i != 0:
                 params = "people/{}/{}?start={}&sort=time&rating=all&filter=all&mode=grid".format(id, category, start_i)
