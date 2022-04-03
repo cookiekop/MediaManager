@@ -21,7 +21,7 @@ class JellyfinManager:
                 handler.notify('No IMDb ID: {}'.format(item['Name']), critical=False)
                 return
             if not is_series:
-                self._db.insert(db_tb_name, db_cols, (item_imdb_id, 0, 0, item['Id'], ts))
+                self._db.insert(db_tb_name, db_cols, (item_imdb_id, None, 0, 0, None, None, item['Id'], ts))
                 self._db.update(db_tb_name, 'jf_id', item['Id'], 'imdb_id', item_imdb_id, ts)
             else:
                 serie_imdb_id = item_imdb_id
@@ -30,7 +30,7 @@ class JellyfinManager:
                 for season in seasons:
                     season_num = season['Name'].strip().split(' ')[-1]
                     if season_num == '1':
-                        self._db.insert(db_tb_name, db_cols, (serie_imdb_id, 0, 1, season['Id'], ts))
+                        self._db.insert(db_tb_name, db_cols, (serie_imdb_id, None, 0, 1, None, None, season['Id'], ts))
                         self._db.update(db_tb_name, 'jf_id', season['Id'], 'imdb_id', serie_imdb_id, ts)
                     else:
                         episode_0 = jf_client.jellyfin.get_provider_info(parent_id=season['Id'])['Items'][0]
@@ -38,7 +38,7 @@ class JellyfinManager:
                         if episode_imdb_id is None:
                             handler.notify('No IMDb ID: {}'.format(episode_0['Name']), critical=False)
                             continue
-                        self._db.insert(db_tb_name, db_cols, (episode_imdb_id, 0, 1, season['Id'], ts))
+                        self._db.insert(db_tb_name, db_cols, (episode_imdb_id, None, 0, 1, None, None, season['Id'], ts))
                         self._db.update(db_tb_name, 'jf_id', season['Id'], 'imdb_id', episode_imdb_id, ts)
                             
         for folder in media_folders:

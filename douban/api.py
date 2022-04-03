@@ -43,32 +43,50 @@ class DoubanData:
     def update(self, last_update_ts):
         self._ts = int(time.time())
         self._last_update_ts = last_update_ts
-        self._get_data(self._id, 'wish')
+        # self._get_data(self._id, 'wish')
         self._get_data(self._id, 'collect')
     
     def _get_data(self, id, category):
         def get_details(subject_id):
             params = "subject/{}".format(subject_id)
             res = self._api.request(params=params)
-            if not res.ok: return "", None
+            if not res.ok: return "", None, None, None
+
             soup = BeautifulSoup(res.content, "html.parser")
-            info = soup.find(name='div', attrs={"id": "info"}).text.strip().split('\n')
-            info_len = len(info)
+            info = soup.find(name='div', attrs={"id": "info"})
+            info_texts = info.text.strip().split('\n')
             is_series = False
+            season_num = None
+            serie_imdb_id = None
             imdb_id = ""
-            for i in range(info_len):
-                if "IMDb" in info[i]: imdb_id += info[i].split(": ")[-1]
-                if "集数" in info[i]: is_series = True
+            for info_text in info_texts:
+                if "IMDb" in info_text: imdb_id += info_text.split(": ")[-1]
+                if "集数" in info_text: is_series = True
+                if "季数" in info_text: 
+                    try:
+                        season_info = info.find(name="select", attrs={"id": "season"}).find_all(name="option")
+                    except AttributeError: handler.notify("Season INFO.", critical=False)
+                    else: 
+                        for season in season_info:
+                            if season.get("selected", None) is not None: season_num = int(season.text)
+                        if season_num != 1: 
+                            serie_douban_id = season_info[0]["value"]
+                            db_data = self._db.query(db_tb_name, "douban_id={}".format(serie_douban_id))
+                            if len(db_data) == 1: serie_imdb_id = db_data[0][0]
+                            else: serie_imdb_id = get_details(serie_douban_id)[0]
+                                            
             if len(imdb_id) == 0: handler.notify(msg="No IMDb ID found", critical=False)
-            return imdb_id, is_series
-                
+            if is_series and serie_imdb_id is None: serie_imdb_id = imdb_id
+            if is_series and season_num is None: season_num = 1
+            return imdb_id, is_series, season_num, serie_imdb_id
+
         params = "people/{}/{}".format(id, category)
         res = self._api.request(params=params)
         soup = BeautifulSoup(res.content, "html.parser")
         page_name = soup.head.title.text
         wish_num = int(page_name[page_name.rfind('(')+1: -2])
 
-        for start_i in range(0, wish_num, 15):
+        for start_i in range(315, wish_num, 15):
             print(start_i)
             if start_i != 0:
                 params = "people/{}/{}?start={}&sort=time&rating=all&filter=all&mode=grid".format(id, category, start_i)
@@ -91,13 +109,19 @@ class DoubanData:
                 if date_ts < self._last_update_ts: return
 
                 subject_id = detail_link.split('/')[-2]
-                imdb_id, is_series = get_details(subject_id)
                 print(detail_link)
+                imdb_id, is_series, season_num, serie_imdb_id = get_details(subject_id)
                 if len(imdb_id) == 0: continue
-                self._db.insert(db_tb_name, db_cols, (imdb_id, rating, int(is_series), None, self._ts))
+                if is_series:
+                    assert(season_num is not None and serie_imdb_id is not None)
+                    if season_num == 1: assert(imdb_id == serie_imdb_id)
+                    else: assert(imdb_id != serie_imdb_id)
+                self._db.insert(db_tb_name, db_cols, 
+                                (imdb_id, subject_id, rating, int(is_series), season_num, serie_imdb_id, None, self._ts))
                 self._db.update(db_tb_name, 'rating', rating, 'imdb_id', imdb_id, self._ts)
-
-
+                self._db.update(db_tb_name, 'douban_id', subject_id, 'imdb_id', imdb_id, self._ts)
+                self._db.update(db_tb_name, 'season_num', season_num, 'imdb_id', imdb_id, self._ts)
+                self._db.update(db_tb_name, 'serie_imdb_id', serie_imdb_id, 'imdb_id', imdb_id, self._ts)
 
 
 

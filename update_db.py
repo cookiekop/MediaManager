@@ -11,10 +11,10 @@ def main():
     db.create_tb(db_tb_name, db_cols, db_col_ds, db_col_type)
     db_data = db.query(db_tb_name, 'True ORDER BY update_time DESC')
     last_update_time = 0
-    if len(db_data) != 0: last_update_time = db_data[0][-1]
+    # if len(db_data) != 0: last_update_time = db_data[0][-1]
 
-    jellyfin_manager = JellyfinManager(db)
-    jellyfin_manager.update()
+    # jellyfin_manager = JellyfinManager(db)
+    # jellyfin_manager.update()
 
     douban_data = DoubanData(db, "175139954")
     douban_data.update(last_update_time)

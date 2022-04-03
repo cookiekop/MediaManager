@@ -21,7 +21,7 @@ def main():
         for data in db_data:
             category = series_categories if data[2] == 1 else movie_categories
             f = f_l_s if data[2] == 1 else f_l_m
-            fn_prefix = "series" if data[2] == 1 else "movies"
+            fn_prefix = "series" if data[2] == 1 else "movie"
             for retry in range(retries):
                 api_ret = client.search(search_imdb=data[0], categories=category, sort='last')
                 if len(api_ret) > 0: 
