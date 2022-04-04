@@ -19,10 +19,8 @@ def main():
                         api.RarbgAPI.CATEGORY_MOVIE_X264_720P, \
                         api.RarbgAPI.CATEGORY_MOVIE_X265_1080P]
     series_categories = [api.RarbgAPI.CATEGORY_TV_EPISODES_HD]
-    db_data = db.query(db_tb_name, "rating=0 AND jf_id is NULL")[:max_downloads]
-    if len(db_data) < max_downloads: db_data.extend(db.query(db_tb_name, "rating=5 AND jf_id is NULL") \
-                                     [:max_downloads - len(db_data)])
-                                     
+    db_data = db.query(db_tb_name, "(rating=0 or rating=5) AND jf_id is NULL")
+    download_num = 0
     with open("magnets_movies.txt", "w") as f_l_m, \
          open("magnets_series.txt", "w") as f_l_s, \
          open("filenames.txt", "w") as f_n:
@@ -42,9 +40,11 @@ def main():
                 if torrent.leechers == 0 and torrent.seeders < 3: continue
                 f_n.write(fn_prefix+"/"+torrent.filename+"\n")
                 f.write(torrent.download+"\n")
+                download_num += 1
                 break
+            if download_num == max_downloads: break
             
-    print(download_dir)
+    sys.exit(download_dir)
     
 
 if __name__ == "__main__":
