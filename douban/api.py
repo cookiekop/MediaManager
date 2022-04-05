@@ -35,16 +35,17 @@ class DoubanMovieAPI:
         return res
 
 class DoubanData:
-    def __init__(self, db, id):
+    def __init__(self, db, ids):
         self._api = DoubanMovieAPI()
         self._db = db
-        self._id = id
+        self._ids = ids
     
     def update(self, last_update_ts):
         self._ts = int(time.time())
         self._last_update_ts = last_update_ts
-        self._get_data(self._id, 'wish')
-        self._get_data(self._id, 'collect')
+        for id in self._ids:
+            self._get_data(id, 'wish')
+            self._get_data(id, 'collect')
     
     def _get_data(self, id, category):
         def get_details(subject_id):
