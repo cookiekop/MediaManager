@@ -22,9 +22,9 @@ def main():
     db_data = db.query(db_tb_name, "(rating=0 or rating=5) AND jf_id is NULL")
     db_data = sorted(db_data, key=lambda x: x[2])
     download_num = 0
-    with open("magnets_movies.txt", "w") as f_l_m, \
-         open("magnets_series.txt", "w") as f_l_s, \
-         open("filenames.txt", "w") as f_n:
+    with open("movies.magnets", "w") as f_l_m, \
+         open("series.magnets", "w") as f_l_s, \
+         open("filenames", "w") as f_n:
         for data in db_data:
             f = f_l_s if data[3] == 1 else f_l_m
             fn_prefix = "series" if data[3] == 1 else "movie"
@@ -45,6 +45,5 @@ def main():
                 break
             if download_num == settings['max_downloads']: break
     
-
 if __name__ == "__main__":
     main()

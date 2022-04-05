@@ -1,0 +1,6 @@
+requests
+bs4
+mysql-connector-python
+websocket
+websocket-client
+yaml

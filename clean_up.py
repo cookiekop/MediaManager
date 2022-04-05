@@ -15,7 +15,7 @@ def main():
             if os.path.isdir(file_path) and len(os.listdir(file_path)) == 0:
                 os.rmdir(file_path)
 
-    with open("filenames.txt", "r") as f:
+    with open("filenames", "r") as f:
         for filename in f:
             possible_work_dir = os.path.join(settings['download_dir'], filename.strip())
             work_dir_list = glob.glob(possible_work_dir+"*")
