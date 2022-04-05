@@ -20,6 +20,7 @@ def main():
                         api.RarbgAPI.CATEGORY_MOVIE_X265_1080P]
     series_categories = [api.RarbgAPI.CATEGORY_TV_EPISODES_HD]
     db_data = db.query(db_tb_name, "(rating=0 or rating=5) AND jf_id is NULL")
+    db_data = sorted(db_data, key=lambda x: x[2])
     download_num = 0
     with open("magnets_movies.txt", "w") as f_l_m, \
          open("magnets_series.txt", "w") as f_l_s, \
