@@ -8,8 +8,8 @@ DOWNLOAD_DIR=`get_from_settings \'download_dir\'`
 TRANSMISSION_HOST=`get_from_settings \'transmission_host\'`
 TRANSMISSION_AUTH=`get_from_settings \'transmission_auth\'`
 
-python update_db.py
-python get_magnet_url.py
+python3 update_db.py
+python3 get_magnet_url.py
 while read line 
 do 
     transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download_dir ${DOWNLOAD_DIR}/movie -a $line
