@@ -12,10 +12,10 @@ python3 update_db.py
 python3 get_magnet_url.py
 while read line 
 do 
-    transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download-dir ${DOWNLOAD_DIR}/movie -a $line
+    transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download-dir ${DOWNLOAD_DIR}/movie --dht --port 16999 -a $line
 done < movies.magnets
 
 while read line 
 do 
-    transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download-dir ${DOWNLOAD_DIR}/series -a $line
+    transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download-dir ${DOWNLOAD_DIR}/series --dht --port 16999 -a $line
 done < series.magnets
