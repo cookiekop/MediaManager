@@ -16,7 +16,7 @@ def main():
     jellyfin_manager = JellyfinManager(db)
     jellyfin_manager.update()
 
-    for user in douban_users:
+    for user in settings['douban_users']:
         douban_data = DoubanData(db, user)
         douban_data.update(last_update_time)
     

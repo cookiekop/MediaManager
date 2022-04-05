@@ -26,7 +26,7 @@ class DoubanMovieAPI:
     def request(self, params=""):
         for retry_i in range(self._retries):
             sleep(0.1)
-            res = self._sess.get(self._url + params, verify=False, proxies=proxies)
+            res = self._sess.get(self._url + params, verify=False, proxies=settings['proxies'])
             if res.ok: break
             elif res.status_code == 404: 
                 handler.notify("Douban API 404", critical=False)

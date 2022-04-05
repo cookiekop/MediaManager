@@ -17,7 +17,7 @@ def main():
 
     with open("filenames.txt", "r") as f:
         for filename in f:
-            possible_work_dir = os.path.join(download_dir, filename.strip())
+            possible_work_dir = os.path.join(settings['download_dir'], filename.strip())
             work_dir_list = glob.glob(possible_work_dir+"*")
             for work_dir in work_dir_list:
                 if work_dir.endswith(".aria2"): continue

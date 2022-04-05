@@ -1,5 +1,5 @@
 import mysql.connector
-from header import db_host, db_name, db_passwd, db_user
+from header import *
 
 class MediaSQL:
     _instance = None
@@ -9,10 +9,10 @@ class MediaSQL:
         return MediaSQL._instance
 
     def __init__(self):
-        self._mydb = mysql.connector.connect(host=db_host, \
-                                             user=db_user, \
+        self._mydb = mysql.connector.connect(host=settings['db_host'], \
+                                             user=settings['db_user'], \
                                              auth_plugin = 'mysql_native_password', \
-                                             passwd=db_passwd)
+                                             passwd=settings['db_passwd'])
         cursor = self._mydb.cursor()
         cursor.execute('CREATE DATABASE IF NOT EXISTS {};'.format(db_name))
         cursor.execute('use {};'.format(db_name))

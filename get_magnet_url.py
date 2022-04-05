@@ -42,9 +42,7 @@ def main():
                 f.write(torrent.download+"\n")
                 download_num += 1
                 break
-            if download_num == max_downloads: break
-            
-    sys.exit(download_dir)
+            if download_num == settings['max_downloads']: break
     
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import time
 import logging
 import platform
-from header import proxies
+from header import settings
 
 import requests
 
@@ -139,7 +139,7 @@ class _RarbgAPIv2(object):
         sess = requests.Session()
         req = requests.Request(method, url, params=params, headers=headers)
         preq = req.prepare()
-        resp = sess.send(preq, proxies=proxies)
+        resp = sess.send(preq, proxies=settings['proxies'])
         resp.raise_for_status()
         return resp
 
