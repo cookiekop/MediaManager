@@ -13,7 +13,7 @@ python3 get_magnet_url.py
 while read line 
 do 
     transmission-remote $TRANSMISSION_HOST --auth=$TRANSMISSION_AUTH --download_dir ${DOWNLOAD_DIR}/movie -a $line
-done < movie.magnets
+done < movies.magnets
 
 while read line 
 do 
