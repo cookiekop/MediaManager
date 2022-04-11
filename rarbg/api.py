@@ -180,7 +180,7 @@ def request(func):
                         return []
 
                     self._log.warn('error %s', body)
-                    raise ValueError('error')
+                    # raise ValueError('error')
                 elif 'torrent_results' not in body:
                     self._log.info('Bad response %s', body)
                 return body['torrent_results']
