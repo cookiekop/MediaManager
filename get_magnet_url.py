@@ -22,7 +22,7 @@ def main():
     db_data = db.query(db_tb_name, "(rating=0 or rating=5) AND jf_id is NULL")
     db_data = sorted(db_data, key=lambda x: x[2])
     download_num = 0
-    with open("movies.magnets", "w") as f_l_m, \
+    with open("movie.magnets", "w") as f_l_m, \
          open("series.magnets", "w") as f_l_s, \
          open("filenames", "w") as f_n:
         for data in db_data:

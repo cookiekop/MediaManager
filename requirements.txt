@@ -3,4 +3,5 @@ bs4
 mysql-connector-python
 websocket
 websocket-client
-yaml
+pyyaml
+aria2p
