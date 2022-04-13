@@ -7,9 +7,18 @@ from bs4 import BeautifulSoup
 
 from header import *
 from handler import ErrorHandler
+import random
 handler = ErrorHandler()
 
 class DoubanMovieAPI:
+    def get_proxy():
+        session_id = random.random()
+        proxy_settings = settings['proxy_settings']
+        super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
+            (proxy_settings['username'], session_id, proxy_settings['passwd'], proxy_settings['port']))
+        return {"http": super_proxy_url,
+                "https": super_proxy_url}
+
     def __init__(self, retries=10):
         self._sess = requests.Session()
         self._url = "https://movie.douban.com/"
@@ -26,7 +35,7 @@ class DoubanMovieAPI:
     def request(self, params=""):
         for retry_i in range(self._retries):
             sleep(0.1)
-            res = self._sess.get(self._url + params, verify=False, proxies=settings['proxies'])
+            res = self._sess.get(self._url + params, verify=False, proxies=DoubanMovieAPI.get_proxy())
             if res.ok: break
             elif res.status_code == 404: 
                 handler.notify("Douban API 404", critical=False)

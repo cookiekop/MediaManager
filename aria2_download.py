@@ -10,7 +10,7 @@ aria2 = aria2p.API(
 def download(type):
     with open("{}.magnets".format(type), "r") as f:
         for magnet in f:
-            aria2p.add_magnet(magnet, {'dir': "{}/{}".format(settings['download_dir'], type)})
+            aria2.add_magnet(magnet, {'dir': "{}/{}".format(settings['download_dir'], type)})
 
 def main():
     for type in ['movie', 'series']:

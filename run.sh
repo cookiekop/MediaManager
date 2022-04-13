@@ -6,5 +6,5 @@ get_from_settings() {
 }
 
 python3 update_db.py
-python3 get_magnet_url.py
-python3 aria2_download.py
+# python3 get_magnet_url.py
+# python3 aria2_download.py
