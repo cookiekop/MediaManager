@@ -13,8 +13,8 @@ def main():
     last_update_time = 0
     if len(db_data) != 0: last_update_time = db_data[0][-1]
 
-    # jellyfin_manager = JellyfinManager(db)
-    # jellyfin_manager.update()
+    jellyfin_manager = JellyfinManager(db)
+    jellyfin_manager.update()
 
     douban_data = DoubanData(db, settings['douban_users'])
     douban_data.update(last_update_time)
