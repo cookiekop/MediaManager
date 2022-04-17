@@ -19,7 +19,7 @@ def main():
                         api.RarbgAPI.CATEGORY_MOVIE_X264_720P, \
                         api.RarbgAPI.CATEGORY_MOVIE_X265_1080P]
     series_categories = [api.RarbgAPI.CATEGORY_TV_EPISODES_HD]
-    db_data = db.query(db_tb_name, "(rating=0 or rating=5) AND jf_id is NULL")
+    db_data = db.query(db_tb_name, "(rating=0 or (is_series=0 and rating=5)) AND jf_id is NULL")
     db_data = sorted(db_data, key=lambda x: x[2])
     download_num = 0
     with open("movie.magnets", "w") as f_l_m, \
@@ -43,7 +43,7 @@ def main():
                 f.write(torrent.download+"\n")
                 download_num += 1
                 break
-            if download_num == settings['max_downloads']: break
+            if download_num == settings['max_magnets']: break
     
 if __name__ == "__main__":
     main()

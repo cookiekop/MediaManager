@@ -1,11 +1,15 @@
 import time
 import logging
 import platform
-from header import settings
+if __name__ != "__main__":
+    from header import settings
+    from .leakybucket import LeakyBucket
+else:
+    from leakybucket import LeakyBucket
 
 import requests
 
-from .leakybucket import LeakyBucket
+
 __version__ = '0.4.2'
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -139,7 +143,7 @@ class _RarbgAPIv2(object):
         sess = requests.Session()
         req = requests.Request(method, url, params=params, headers=headers)
         preq = req.prepare()
-        resp = sess.send(preq, proxies=settings['proxies'])
+        resp = sess.send(preq)
         resp.raise_for_status()
         return resp
 
@@ -294,3 +298,10 @@ class RarbgAPI(_RarbgAPIv2):
             kwargs['categories'] = [value, ]
 
         return kwargs
+
+if __name__ == "__main__":
+    api = RarbgAPI()
+    api_ret = api.search(search_imdb="tt16434892", \
+                            categories=[RarbgAPI.CATEGORY_TV_EPISODES_HD], \
+                            sort='last')
+    for t in api_ret: print(t)
