@@ -48,6 +48,7 @@ class JellyfinManager:
             else:
                 seasons = jf_client.jellyfin.get_provider_info(parent_id=item['Id'])['Items']
                 for season in seasons:
+                    season_path = season.get('Path', item['Path'])
                     season_num = season['IndexNumber']
                     episodes = jf_client.jellyfin.get_provider_info(parent_id=season['Id'])['Items']
                     if season_num == 1:
@@ -57,7 +58,7 @@ class JellyfinManager:
                         if serie_imdb_id is None:
                             handler.notify('No IMDb ID: {}'.format(episodes[0]['Name']), critical=False)
                             continue
-                    update_sub(season['Path'], serie_imdb_id, episodes=episodes)
+                    update_sub(season_path, serie_imdb_id, episodes=episodes)
                     self._db.insert(db_tb_name, db_cols, (serie_imdb_id, None, 0, 1, None, None, season['Id'], ts))
                     self._db.update(db_tb_name, 'jf_id', season['Id'], 'imdb_id', serie_imdb_id, ts)
                             
