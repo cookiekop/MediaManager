@@ -264,7 +264,7 @@ class API(object):
         return self.user_items(params={
             'ParentId': parent_id,
             'NameStartsWith': letter,
-            'Fields': ("ProviderIds"),
+            'Fields': ("ProviderIds,Path"),
             'Recursive': recursive,
             'IncludeItemTypes': media
         })

@@ -5,3 +5,5 @@ websocket
 websocket-client
 pyyaml
 aria2p
+selenium
+pyunpack

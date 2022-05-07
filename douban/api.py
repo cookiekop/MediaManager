@@ -1,28 +1,15 @@
-from time import sleep
 import time
-import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+from base_api import BaseAPI
 from bs4 import BeautifulSoup
 
 from header import *
 from handler import ErrorHandler
-import random
 handler = ErrorHandler()
 
-class DoubanMovieAPI:
-    def get_proxy():
-        session_id = random.random()
-        proxy_settings = settings['proxy_settings']
-        super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
-            (proxy_settings['username'], session_id, proxy_settings['passwd'], proxy_settings['port']))
-        return {"http": super_proxy_url,
-                "https": super_proxy_url}
-
+class DoubanMovieAPI(BaseAPI):
     def __init__(self, retries=10):
-        self._sess = requests.Session()
+        super(DoubanMovieAPI, self).__init__(retries)
         self._url = "https://movie.douban.com/"
-        self._retries = retries
         header = {
             'Host':'movie.douban.com',
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -32,16 +19,6 @@ class DoubanMovieAPI:
             'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4'
         }
         self._sess.headers.update(header)
-    def request(self, params=""):
-        for retry_i in range(self._retries):
-            sleep(0.1)
-            res = self._sess.get(self._url + params, verify=False, proxies=DoubanMovieAPI.get_proxy())
-            if res.ok: break
-            elif res.status_code == 404: 
-                handler.notify("Douban API 404", critical=False)
-                break
-            if retry_i == self._retries - 1: handler.notify("Douban API")
-        return res
 
 class DoubanData:
     def __init__(self, db, ids):

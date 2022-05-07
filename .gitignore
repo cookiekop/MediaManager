@@ -1,5 +1,7 @@
 *.log
 *.json
+*.pkl
 __pycache__
 .DS_Store
 settings.yaml
+tmp/*
