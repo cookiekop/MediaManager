@@ -169,7 +169,7 @@ class SubFinder(BaseAPI):
             self._driver.get("{}/a/{}".format(self._url, sub_id))
             sleep(1)
             try:
-                button = self._driver.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']")
+                button = self._wait.until(lambda d: d.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']"))
             except NoSuchElementException:
                 handler.notify("No Sub: {}".format(imdb_id), critical=False)
                 return 
@@ -189,4 +189,4 @@ class SubFinder(BaseAPI):
 
 if __name__ == '__main__':
     sf = SubFinder()
-    sf.get_sub("/Users/cookiekop/Downloads", "tt1877830", name="tt1877830")
+    sf.get_sub("/Users/cookiekop/Downloads", "tt8228288", name="tt8228288")

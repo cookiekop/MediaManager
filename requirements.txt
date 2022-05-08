@@ -7,3 +7,4 @@ pyyaml
 aria2p
 selenium
 pyunpack
+patool
