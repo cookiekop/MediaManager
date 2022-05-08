@@ -9,5 +9,5 @@ class ErrorHandler:
         pass
 
     def notify(self, msg="", critical=True):
-        print("ERROR: {}".format(msg))
+        print("Notify: {}".format(msg))
         if critical: exit(1)

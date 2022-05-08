@@ -1,4 +1,5 @@
 # import cv2
+from calendar import c
 import random
 from time import sleep
 import re
@@ -18,6 +19,7 @@ from header import settings
 
 class SubFinder(BaseAPI):
     SUB_EXT = ['srt', 'ass']
+    MAX_SUB_NUM = 5
     def __init__(self):
         super(SubFinder, self).__init__(retries=1)
 
@@ -40,6 +42,7 @@ class SubFinder(BaseAPI):
         options.add_argument("headless")
         options.add_argument("no-sandbox")
         options.add_argument("disable-dev-shm-usage")
+        # options.add_argument('proxy-server={}'.format(BaseAPI.get_proxy()['http']))
         options.experimental_options["prefs"] = {"download.default_directory": self._tmp_dir}
         self._driver = webdriver.Chrome(executable_path=settings['selenium_exe'], options=options)
         self._wait = WebDriverWait(self._driver, 10)
@@ -82,7 +85,7 @@ class SubFinder(BaseAPI):
         #     f2.write(ret.content)
         # distance = findfic()
         # print(distance)
-        trajectory = get_tracks(207)
+        trajectory = get_tracks(207+random.randint(-10, 10))
         slider_element = self._wait.until(
             EC.element_to_be_clickable(
                 (By.CSS_SELECTOR, "div[class='tc-drag-button tc-drag-button-pc']"))
@@ -97,10 +100,13 @@ class SubFinder(BaseAPI):
             ).perform()
         sleep(0.5)
         ac.release(slider_element).perform()
+        sleep(0.5)
+        self._driver.switch_to.default_content()
+
 
     def get_sub(self, path, imdb_id, is_serie=False, name=None, name_map=None):
+        handler.notify("Getting Sub for {} ...".format(imdb_id), critical=False)
         def check_download_finished():
-            sleep(1)
             for fname in os.listdir(self._tmp_dir):
                 if fname.endswith('.crdownload'): return False
             return True
@@ -141,17 +147,20 @@ class SubFinder(BaseAPI):
                 f_ext = file.split('.')[-1]
                 if f_ext in ['7z', 'zip']: 
                     f_name = file[: file.rfind('.')]
-                    extract_dir = os.par.join(workdir, f_name)
+                    extract_dir = os.path.join(workdir, f_name)
                     os.mkdir(extract_dir)
                     Archive(os.path.join(workdir, file)).extractall(extract_dir)
                     cnt = relocate(extract_dir, cnt)
                 elif f_ext in SubFinder.SUB_EXT:
                     cnt = relocate(workdir, cnt, file=file)
+            handler.notify("Got {} Subs!".format(cnt), critical=False)
                             
         ret = self.request(params="/search/{}".format(imdb_id))
         soup = BeautifulSoup(ret.content, "html.parser")
         subs = soup.find_all(name='div', attrs={"class": "float-start f16 fw-bold"})
+        sub_cnt = 0
         for sub in subs: 
+            if sub_cnt > SubFinder.MAX_SUB_NUM: break
             if is_serie:
                 pattern = re.compile(r'E\d+')  
                 ep_num = pattern.search(sub.text).group()
@@ -159,21 +168,25 @@ class SubFinder(BaseAPI):
             sub_id = sub.a['href'].split('/')[-1]
             self._driver.get("{}/a/{}".format(self._url, sub_id))
             sleep(1)
-            do_captcha = False
             try:
-                button = self._driver.find_element(By.ID, 'TencentCaptcha')
-            except NoSuchElementException:
                 button = self._driver.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']")
-            else: 
-                handler.notify("SubHD Captcha!", critical=False)
-                do_captcha = True
+            except NoSuchElementException:
+                handler.notify("No Sub: {}".format(imdb_id), critical=False)
+                return 
             self._wait.until(EC.element_to_be_clickable(button))
             self._driver.execute_script("arguments[0].click();", button)
-            if do_captcha: self._solve_captcha()
+            sleep(1)
+            if button.get_attribute('id') == 'TencentCaptcha':
+                handler.notify("SubHD Captcha!", critical=False)
+                while "下载中" not in button.text: 
+                    self._solve_captcha()
+                    sleep(3)
+                    button = self._driver.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']")
             while not check_download_finished(): sleep(2)
+            sub_cnt += 1
         self._driver.quit()
-        
+        unpack()
 
 if __name__ == '__main__':
     sf = SubFinder()
-    sf.search("tt13668894", True)
+    sf.get_sub("/Users/cookiekop/Downloads", "tt1877830", name="tt1877830")
