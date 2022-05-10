@@ -98,10 +98,11 @@ class SubFinder(BaseAPI):
                 xoffset=track,
                 yoffset=round(random.uniform(1.0, 3.0), 1)
             ).perform()
-        sleep(0.5)
+        sleep(1)
         ac.release(slider_element).perform()
-        sleep(0.5)
+        sleep(1)
         self._driver.switch_to.default_content()
+        sleep(5)
 
 
     def get_sub(self, path, imdb_id, is_serie=False, name=None, name_map=None):
@@ -167,21 +168,21 @@ class SubFinder(BaseAPI):
                 if int(ep_num.split('E')[-1]) != 0: continue
             sub_id = sub.a['href'].split('/')[-1]
             self._driver.get("{}/a/{}".format(self._url, sub_id))
-            sleep(1)
+            # sleep(1)
             try:
                 button = self._wait.until(lambda d: d.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']"))
             except NoSuchElementException:
                 handler.notify("No Sub: {}".format(imdb_id), critical=False)
                 return 
-            self._wait.until(EC.element_to_be_clickable(button))
+            # self._wait.until(EC.element_to_be_clickable(button))
             self._driver.execute_script("arguments[0].click();", button)
-            sleep(1)
+            # sleep(1)
             if button.get_attribute('id') == 'TencentCaptcha':
-                handler.notify("SubHD Captcha!", critical=False)
                 while "下载中" not in button.text: 
+                    handler.notify("SubHD Captcha!", critical=False)
                     self._solve_captcha()
-                    sleep(3)
-                    button = self._driver.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']")
+                    # sleep(5)
+                    button = self._wait.until(lambda d: d.find_element(By.CSS_SELECTOR, "button[class='btn btn-danger down']"))
             while not check_download_finished(): sleep(2)
             sub_cnt += 1
         self._driver.quit()
@@ -189,4 +190,4 @@ class SubFinder(BaseAPI):
 
 if __name__ == '__main__':
     sf = SubFinder()
-    sf.get_sub("/Users/cookiekop/Downloads", "tt8228288", name="tt8228288")
+    sf.get_sub("tmp", "tt8228288", name="tt8228288")
