@@ -43,7 +43,7 @@ class MediaSQL:
 
     def update(self, tb_name, col, new_val, prim_key, id, ts):
         if col == "rating":
-            cur_rating = self.query(tb_name, arg="{}=\"{}\"".format(prim_key, id))[2]
+            cur_rating = self.query(tb_name, arg="{}=\"{}\"".format(prim_key, id))[0][2]
             if cur_rating > 0: return
         cursor = self._mydb.cursor()
         sql = "UPDATE {} SET {} = %s WHERE {} = %s".format(tb_name, col, prim_key)
