@@ -27,8 +27,9 @@ class JellyfinManager:
                 seasons = jf_client.jellyfin.get_provider_info(parent_id=item['Id'])['Items']
                 print(item['Name'])
                 for season in seasons:
-                    season_num = season['Name'].strip().split(' ')[-1]
-                    if season_num == '1':
+                    season_name = season['Name'].strip().split(' ')
+                    if season_name[0] != 'Season': continue
+                    if season_name[-1] == '1':
                         self._db.insert(db_tb_name, db_cols, (serie_imdb_id, None, 0, 1, None, None, season['Id'], None))
                         self._db.update(db_tb_name, 'jf_id', season['Id'], 'imdb_id', serie_imdb_id, None)
                     else:
